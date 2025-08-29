@@ -1,119 +1,85 @@
-use Hospital
+USE Hospital;
 
+CREATE TABLE Nurse(
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    address VARCHAR(100),
+    ward_id INT NULL
+);
 
-create table Nurse(
-	id int primary key,
-	name varchar(50),
-	address varchar(100),
-	ward_id int
-)
+CREATE TABLE Ward(
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    nurse_id INT NULL
+);
 
-create table Ward(
-	id int primary key,
-	name varchar(50),
-	nurse_id int
-)
-create table Drug(
-	code int primary key,
-	dosage int
-)
+CREATE TABLE Drug(
+    code INT PRIMARY KEY,
+    dosage INT
+);
 
-create table Patient(
-	id int primary key,
-	name varchar(50),
-	dateOfBirth date,
-	ward_id int,
-	consultant_id int
-)
+CREATE TABLE Patient(
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    dateOfBirth DATE,
+    ward_id INT,
+    consultant_id INT
+);
 
-create table Consultant(
-	id int primary key,
-	name varchar(50),
-)
+CREATE TABLE Consultant(
+    id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
 
-create table Drug_brand(
-	code int,
-	brand varchar(50),
-)
+CREATE TABLE Drug_brand(
+    code INT NOT NULL,
+    brand VARCHAR(50) NOT NULL,
+    CONSTRAINT Pk3 PRIMARY KEY(code, brand)
+);
 
-create table ConsultantExamine(
-	patient_id int,
-	consultant_id int
-)
+CREATE TABLE ConsultantExamine(
+    patient_id INT NOT NULL,
+    consultant_id INT NOT NULL,
+    CONSTRAINT Pk2 PRIMARY KEY(patient_id, consultant_id)
+);
 
-create table DrugRecords(
-	nurse_num int,
-	drug_code int,
-	dTime time,
-	dDate date,
-	dosage int,
-	patient_id int
-)
+CREATE TABLE DrugRecords(
+    nurse_num INT,
+    drug_code INT NOT NULL,
+    dTime TIME NOT NULL,
+    dDate DATE NOT NULL,
+    dosage INT,
+    patient_id INT,
+    CONSTRAINT Pk1 PRIMARY KEY(drug_code, dDate, dTime, patient_id)
+);
 
-alter table Ward
-add constraint fk1
-FOREIGN key(nurse_id) References Nurse(id); 
+-- Foreign Keys
+ALTER TABLE Ward
+ADD CONSTRAINT fk1 FOREIGN KEY(nurse_id) REFERENCES Nurse(id);
 
-alter table Nurse 
-add constraint fk2
-foreign key(ward_id) references Ward(id);
-
-alter table DrugRecords
-add constraint fk3
-foreign key(nurse_num) references Nurse(id); 
-
-alter table Patient
-add constraint fk4
-foreign key(ward_id) references Ward(id); 
-
-alter table DrugRecords
-add constraint fk5
-foreign key(patient_id) references Patient(id); 
-
-alter table DrugRecords
-add constraint fk6
-foreign key(drug_code) references Drug(code); 
-
-alter table Drug_brand
-add constraint fk7
-foreign key(code) references Drug(code); 
-
-alter table Patient
-add constraint fk8
-foreign key(consultant_id) references Consultant(id);
-
-alter table ConsultantExamine
-add constraint fk9
-foreign key(patient_id) references Patient(id); 
-
-alter table ConsultantExamine
-add constraint fk10
-foreign key(consultant_id) references Consultant(id);
+ALTER TABLE Nurse 
+ADD CONSTRAINT fk2 FOREIGN KEY(ward_id) REFERENCES Ward(id);
 
 ALTER TABLE DrugRecords
-ALTER COLUMN drug_code int NOT NULL;
+ADD CONSTRAINT fk3 FOREIGN KEY(nurse_num) REFERENCES Nurse(id); 
+
+ALTER TABLE Patient
+ADD CONSTRAINT fk4 FOREIGN KEY(ward_id) REFERENCES Ward(id); 
 
 ALTER TABLE DrugRecords
-add constraint Pk1
-primary key(drug_code,dDate,dTime);
+ADD CONSTRAINT fk5 FOREIGN KEY(patient_id) REFERENCES Patient(id); 
+
+ALTER TABLE DrugRecords
+ADD CONSTRAINT fk6 FOREIGN KEY(drug_code) REFERENCES Drug(code); 
+
+ALTER TABLE Drug_brand
+ADD CONSTRAINT fk7 FOREIGN KEY(code) REFERENCES Drug(code); 
+
+ALTER TABLE Patient
+ADD CONSTRAINT fk8 FOREIGN KEY(consultant_id) REFERENCES Consultant(id);
 
 ALTER TABLE ConsultantExamine
-ALTER COLUMN patient_id int NOT NULL;
-ALTER TABLE ConsultantExamine
-ALTER COLUMN consultant_id int NOT NULL;
+ADD CONSTRAINT fk9 FOREIGN KEY(patient_id) REFERENCES Patient(id); 
 
 ALTER TABLE ConsultantExamine
-add constraint Pk2
-primary key(patient_id,consultant_id);
-
-
-alter table Drug_brand
-alter column code int not null;
-
-alter table Drug_brand
-add constraint Pk3
-primary key(code,brand);
-
-
-
-
+ADD CONSTRAINT fk10 FOREIGN KEY(consultant_id) REFERENCES Consultant(id);
