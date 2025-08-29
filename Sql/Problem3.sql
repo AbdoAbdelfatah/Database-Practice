@@ -111,11 +111,9 @@ alter table Drug_brand
 alter column code int not null;
 
 alter table Drug_brand
-alter column brand int not null;
-
-alter table Drug_brand
 add constraint Pk3
 primary key(code,brand);
+
 
 
 
